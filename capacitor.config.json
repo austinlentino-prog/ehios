@@ -1,0 +1,10 @@
+
+{
+  "appId": "com.enemyhunters.app",
+  "appName": "Enemy Hunters",
+  "webDir": "www",
+  "server": {
+    "url": "https://enemy-hunters.netlify.app",
+    "cleartext": false
+  }
+}
