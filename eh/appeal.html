@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Enemy Hunters – Appeal</title>
+
+    <style>
+        body {
+            background: #000;
+            color: white;
+            font-family: Arial;
+            padding: 20px;
+        }
+        input, textarea {
+            width: 90%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
+            background: #111;
+            color: white;
+            font-size: 16px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 12px 20px;
+            font-size: 18px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkred;
+        }
+    </style>
+</head>
+<body>
+
+    <button onclick="window.location.href='index.html'">← Back</button>
+
+    <h1>Kick-Out Appeal Form</h1>
+
+    <p>Name:</p>
+    <input id="name">
+
+    <p>Why were you kicked out?</p>
+    <textarea id="reason" rows="4"></textarea>
+
+    <p>Why should you be allowed back?</p>
+    <textarea id="appeal" rows="4"></textarea>
+
+    <button onclick="submitAppeal()">Submit Appeal</button>
+
+<script>
+function submitAppeal() {
+    const name = document.getElementById("name").value.trim();
+    const reason = document.getElementById("reason").value.trim();
+    const appeal = document.getElementById("appeal").value.trim();
+
+    if (!name || !reason || !appeal) {
+        alert("Please fill out the whole form.");
+        return;
+    }
+
+    let appeals = JSON.parse(localStorage.getItem("EH_kickAppeals")) || [];
+
+    const newAppeal = {
+        name: name,
+        reason: reason,
+        appeal: appeal,
+        time: new Date().toLocaleString()
+    };
+
+    appeals.push(newAppeal);
+    localStorage.setItem("EH_kickAppeals", JSON.stringify(appeals));
+
+    alert("Your appeal has been submitted. Owners will review it.");
+    window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

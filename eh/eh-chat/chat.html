@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enemy Hunters Chat</title>
+  <style>
+    body { background:#000; color:#fff; font-family:Arial; }
+    #chat { width:400px; margin:40px auto; border:1px solid red; padding:10px; }
+    #messages { height:300px; overflow-y:auto; border:1px solid #333; padding:5px; }
+    #send { display:flex; margin-top:10px; }
+    #send input { flex:1; padding:6px; }
+    #send button { padding:6px; background:red; color:white; border:none; }
+  </style>
+</head>
+<body>
+  <div id="chat">
+    <h2>Enemy Hunters Public Chat</h2>
+    <div id="messages"></div>
+
+    <div id="send">
+      <input id="msg" placeholder="Type message...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script src="chat.js"></script>
+</body>
+</html>

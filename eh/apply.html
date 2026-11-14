@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Enemy Hunters – Apply</title>
+
+    <style>
+        body {
+            background: #000;
+            color: white;
+            font-family: Arial;
+            padding: 20px;
+        }
+        input, textarea {
+            width: 90%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            background: #111;
+            color: white;
+        }
+        button {
+            margin-top: 20px;
+            padding: 12px 20px;
+            font-size: 18px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkred;
+        }
+    </style>
+</head>
+<body>
+
+    <button onclick="window.location.href='index.html'">← Back</button>
+
+    <h1>Apply to Enemy Hunters</h1>
+
+    <p>Name:</p>
+    <input id="name">
+
+    <p>School:</p>
+    <input id="school" placeholder="Type your school">
+
+    <p>Grade:</p>
+    <input id="grade" placeholder="Type your grade">
+
+    <p>Why do you want to join?</p>
+    <textarea id="reason" rows="5"></textarea>
+
+    <button onclick="submitForm()">Submit Application</button>
+
+<script>
+function submitForm() {
+    const name = document.getElementById("name").value.trim();
+    const school = document.getElementById("school").value.trim().toLowerCase();
+    const grade = document.getElementById("grade").value.trim().toLowerCase();
+    const reason = document.getElementById("reason").value.trim();
+
+    if (!name || !school || !grade || !reason) {
+        alert("Please fill out the whole form.");
+        return;
+    }
+
+    if (school !== "shaw ave school") {
+        alert("Application denied: You do not meet the school requirement.");
+        window.location.href = "index.html";
+        return;
+    }
+
+    if (grade !== "4th grade") {
+        alert("Application denied: You do not meet the grade requirement.");
+        window.location.href = "index.html";
+        return;
+    }
+
+    // LOAD EXISTING APPLICATIONS
+    let apps = JSON.parse(localStorage.getItem("EH_applications")) || [];
+
+    // CREATE NEW APPLICATION
+    const newApp = {
+        name: name,
+        school: school,
+        grade: grade,
+        reason: reason,
+        time: new Date().toLocaleString()
+    };
+
+    // SAVE IT
+    apps.push(newApp);
+    localStorage.setItem("EH_applications", JSON.stringify(apps));
+
+    alert("Application sent! Owners will review your request.");
+    window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

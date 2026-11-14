@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Enemy Hunters – Kicked Out</title>
+
+    <style>
+        body {
+            background: #000;
+            color: white;
+            font-family: Arial;
+            text-align: center;
+            padding: 40px;
+        }
+        .box {
+            background: #111;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid red;
+            display: inline-block;
+            margin-top: 40px;
+            width: 80%;
+            max-width: 500px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 12px 20px;
+            font-size: 18px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkred;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>You Have Been Removed From Enemy Hunters</h1>
+
+    <div class="box">
+        <p><b>Reason:</b> You were kicked out by an owner.</p>
+        <p>If you believe this was unfair or want to return, you may submit an appeal.</p>
+
+        <button onclick="window.location.href='appeal.html'">
+            Submit Appeal
+        </button>
+    </div>
+
+</body>
+</html>

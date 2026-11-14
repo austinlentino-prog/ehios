@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Enemy Hunters – Reel Comments</title>
+    <style>
+        body {
+            background: #000;
+            color: white;
+            font-family: Arial;
+            padding: 20px;
+        }
+        .commentBox {
+            background: #111;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
+            background: #111;
+            color: white;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 15px;
+            font-size: 16px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkred;
+        }
+        .deleteBtn {
+            background: gray;
+        }
+        .deleteBtn:hover {
+            background: darkgray;
+        }
+    </style>
+</head>
+<body>
+
+<button onclick="window.location.href='reels.html'">← Back to Reels</button>
+<h1>Reel Comments</h1>
+
+<div id="commentsContainer"></div>
+
+<h3>Add Comment</h3>
+<textarea id="commentInput" rows="3"></textarea>
+<button onclick="addComment()">Post Comment</button>
+
+<script>
+    const username = localStorage.getItem("EH_username") || "";
+    const members = JSON.parse(localStorage.getItem("EH_members")) || ["Saint","David","Sifet","Alisha","Jojo"];
+    const owners = ["Austin","Christian"];
+    const allowed = owners.includes(username) || members.includes(username);
+
+    if (!allowed) {
+        document.body.innerHTML = "<h1>ACCESS DENIED</h1><p>Only Enemy Hunters members and owners can comment.</p>";
+        throw new Error("Not allowed");
+    }
+
+    const reelId = localStorage.getItem("EH_currentReelId");
+    if (!reelId) {
+        document.body.innerHTML = "<h1>No reel selected.</h1>";
+        throw new Error("No reel id");
+    }
+
+    let allComments = JSON.parse(localStorage.getItem("EH_reelComments")) || {};
+    if (!allComments[reelId]) allComments[reelId] = [];
+
+    const container = document.getElementById("commentsContainer");
+
+    function saveComments() {
+        localStorage.setItem("EH_reelComments", JSON.stringify(allComments));
+    }
+
+    function renderComments() {
+        container.innerHTML = "";
+        const comments = allComments[reelId];
+
+        if (comments.length === 0) {
+            container.innerHTML = "<p>No comments yet.</p>";
+            return;
+        }
+
+        comments.forEach((c, index) => {
+            const box = document.createElement("div");
+            box.className = "commentBox";
+            box.innerHTML = `
+                <p><b>${c.user}</b> – ${c.time}</p>
+                <p>${c.text}</p>
+            `;
+
+            if (owners.includes(username)) {
+                const delBtn = document.createElement("button");
+                delBtn.className = "deleteBtn";
+                delBtn.innerText = "Delete";
+                delBtn.onclick = () => {
+                    comments.splice(index, 1);
+                    saveComments();
+                    renderComments();
+                };
+                box.appendChild(delBtn);
+            }
+
+            container.appendChild(box);
+        });
+    }
+
+    function addComment() {
+        const text = document.getElementById("commentInput").value.trim();
+        if (!text) {
+            alert("Write a comment first.");
+            return;
+        }
+
+        allComments[reelId].push({
+            user: username,
+            text: text,
+            time: new Date().toLocaleString()
+        });
+
+        saveComments();
+        document.getElementById("commentInput").value = "";
+        renderComments();
+    }
+
+    renderComments();
+</script>
+
+</body>
+</html>

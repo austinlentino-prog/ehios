@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Enemy Hunters – Reels</title>
+    <style>
+        body {
+            margin: 0;
+            background: #000;
+            color: #fff;
+            font-family: Arial;
+            overflow: hidden;
+        }
+        #reelContainer {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        #overlay {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            pointer-events: none;
+        }
+        #caption {
+            max-width: 60%;
+            background: rgba(0,0,0,0.6);
+            padding: 10px;
+            border-radius: 8px;
+            pointer-events: auto;
+        }
+        #actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: auto;
+        }
+        button {
+            padding: 8px 12px;
+            font-size: 14px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkred;
+        }
+        #topBar {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div id="reelContainer">
+    <video id="reelVideo" autoplay controls></video>
+
+    <div id="topBar">
+        <button onclick="window.location.href='dashboard.html'">← Back</button>
+        <button onclick="window.location.href='uploadreel.html'">Upload Reel</button>
+    </div>
+
+    <div id="overlay">
+        <div id="caption"></div>
+        <div id="actions">
+            <button id="likeBtn">❤️ <span id="likeCount">0</span></button>
+            <button id="dislikeBtn">👎 <span id="dislikeCount">0</span></button>
+            <button id="commentsBtn">💬 Comments</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let reels = JSON.parse(localStorage.getItem("EH_reels")) || [];
+    let currentIndex = 0;
+
+    const videoEl = document.getElementById("reelVideo");
+    const captionEl = document.getElementById("caption");
+    const likeCountEl = document.getElementById("likeCount");
+    const dislikeCountEl = document.getElementById("dislikeCount");
+    const likeBtn = document.getElementById("likeBtn");
+    const dislikeBtn = document.getElementById("dislikeBtn");
+    const commentsBtn = document.getElementById("commentsBtn");
+
+    function renderReel() {
+        if (reels.length === 0) {
+            captionEl.innerText = "No reels yet.";
+            videoEl.style.display = "none";
+            likeCountEl.innerText = "0";
+            dislikeCountEl.innerText = "0";
+            return;
+        }
+
+        const reel = reels[currentIndex];
+        videoEl.style.display = "block";
+        videoEl.src = reel.videoData;
+        videoEl.play();
+
+        captionEl.innerText = reel.caption || "";
+        likeCountEl.innerText = reel.likes || 0;
+        dislikeCountEl.innerText = reel.dislikes || 0;
+
+        commentsBtn.onclick = () => {
+            localStorage.setItem("EH_currentReelId", reel.id);
+            window.location.href = "comments.html";
+        };
+    }
+
+    likeBtn.onclick = () => {
+        if (reels.length === 0) return;
+        reels[currentIndex].likes = (reels[currentIndex].likes || 0) + 1;
+        localStorage.setItem("EH_reels", JSON.stringify(reels));
+        renderReel();
+    };
+
+    dislikeBtn.onclick = () => {
+        if (reels.length === 0) return;
+        reels[currentIndex].dislikes = (reels[currentIndex].dislikes || 0) + 1;
+        localStorage.setItem("EH_reels", JSON.stringify(reels));
+        renderReel();
+    };
+
+    // Swipe / wheel navigation
+    let startY = null;
+    document.addEventListener("touchstart", e => {
+        startY = e.touches[0].clientY;
+    });
+
+    document.addEventListener("touchend", e => {
+        if (startY === null) return;
+        const endY = e.changedTouches[0].clientY;
+        const diff = endY - startY;
+        if (Math.abs(diff) > 50) {
+            if (diff < 0) nextReel();
+            else prevReel();
+        }
+        startY = null;
+    });
+
+    document.addEventListener("wheel", e => {
+        if (e.deltaY > 0) nextReel();
+        else prevReel();
+    });
+
+    function nextReel() {
+        if (reels.length === 0) return;
+        currentIndex = (currentIndex + 1) % reels.length;
+        renderReel();
+    }
+
+    function prevReel() {
+        if (reels.length === 0) return;
+        currentIndex = (currentIndex - 1 + reels.length) % reels.length;
+        renderReel();
+    }
+
+    renderReel();
+</script>
+
+</body>
+</html>

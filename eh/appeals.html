@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Enemy Hunters – Kick-Out Appeals</title>
+
+    <style>
+        body {
+            background: #000;
+            color: white;
+            font-family: Arial;
+            padding: 20px;
+        }
+        .appealBox {
+            background: #111;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 2px solid red;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 15px;
+            font-size: 16px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkred;
+        }
+        .deny {
+            background: gray;
+        }
+        .deny:hover {
+            background: darkgray;
+        }
+    </style>
+</head>
+<body>
+
+    <button onclick="window.location.href='dashboard.html'">← Back</button>
+    <h1>Kick-Out Appeals</h1>
+
+    <div id="appealsContainer"></div>
+
+<script>
+    const username = localStorage.getItem("EH_username");
+    const owners = ["Austin", "Christian"];
+
+    // ONLY OWNERS CAN VIEW THIS PAGE
+    if (!owners.includes(username)) {
+        document.body.innerHTML = "<h1>ACCESS DENIED</h1><p>You are not an owner.</p>";
+        throw new Error("Not allowed");
+    }
+
+    let appeals = JSON.parse(localStorage.getItem("EH_kickAppeals")) || [];
+    let members = JSON.parse(localStorage.getItem("EH_members")) || ["Saint","David","Sifet","Alisha","Jojo"];
+
+    const container = document.getElementById("appealsContainer");
+
+    function saveAppeals() {
+        localStorage.setItem("EH_kickAppeals", JSON.stringify(appeals));
+    }
+
+    function saveMembers() {
+        localStorage.setItem("EH_members", JSON.stringify(members));
+    }
+
+    function renderAppeals() {
+        container.innerHTML = "";
+
+        if (appeals.length === 0) {
+            container.innerHTML = "<p>No pending appeals.</p>";
+            return;
+        }
+
+        appeals.forEach((app, index) => {
+            const box = document.createElement("div");
+            box.className = "appealBox";
+
+            box.innerHTML = `
+                <p><b>Name:</b> ${app.name}</p>
+                <p><b>Why they were kicked:</b> ${app.reason}</p>
+                <p><b>Appeal message:</b> ${app.appeal}</p>
+                <p><b>Submitted:</b> ${app.time}</p>
+
+                <button onclick="approve(${index})">Approve Appeal</button>
+                <button class="deny" onclick="deny(${index})">Deny Appeal</button>
+            `;
+
+            container.appendChild(box);
+        });
+    }
+
+    function approve(i) {
+        const app = appeals[i];
+
+        // Add back to members
+        members.push(app.name);
+        saveMembers();
+
+        // Remove appeal
+        appeals.splice(i, 1);
+        saveAppeals();
+
+        alert(app.name + " has been approved and added back to members.");
+        renderAppeals();
+    }
+
+    function deny(i) {
+        const app = appeals[i];
+
+        appeals.splice(i, 1);
+        saveAppeals();
+
+        alert(app.name + "'s appeal has been denied.");
+        renderAppeals();
+    }
+
+    renderAppeals();
+</script>
+
+</body>
+</html>

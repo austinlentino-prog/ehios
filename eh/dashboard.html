@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Enemy Hunters – Dashboard</title>
+
+    <style>
+        body {
+            background: #000;
+            color: white;
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        .box {
+            background: #111;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .section {
+            background: #111;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid red;
+        }
+
+        .adminPanel {
+            background: #222;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid red;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 12px 20px;
+            font-size: 18px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: darkred;
+        }
+
+        ul {
+            margin-top: 8px;
+        }
+
+        ul li a {
+            color: red;
+            text-decoration: none;
+        }
+
+        ul li a:hover {
+            text-decoration: underline;
+            color: darkred;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Enemy Hunters Dashboard</h1>
+    <p id="welcome"></p>
+
+    <!-- OWNER -->
+    <h2>OWNER</h2>
+
+    <div class="box">
+        <strong>Austin (Owner)</strong>
+
+        <ul>
+            <li><a href="https://www.youtube.com/@awesomeaustin1104" target="_blank">YouTube</a></li>
+            <li><a href="https://www.roblox.com/users/3479119972/profile" target="_blank">Roblox</a></li>
+            <li><a href="https://mv4l.netlify.app" target="_blank">MV4L(maintence)</a></li>
+            <li><a href="https://trellis.consciousb.one/web/user.php?id=192" target="_blank">Trellis(vine revival)</a></li>
+        </ul>
+    </div>
+    
+    <div class="box"><strong>Christian</strong>
+        <ul>
+            <li><a href="https://www.roblox.com/users/1828674858/profile" target="_blank">Roblox</a></li>
+            <li><a href="https://www.youtube.com/@Dandysworldproficalgamer" target="_blank">YouTube</a></li>
+        </ul>
+    </div>
+
+    <!-- MEMBERS -->
+    <h2>MEMBERS</h2>
+
+    <div class="box"><strong>Christian</strong>
+        <ul>
+            <li><a href="https://www.roblox.com/users/1828674858/profile" target="_blank">Roblox</a></li>
+            <li><a href="https://www.youtube.com/@Dandysworldproficalgamer" target="_blank">YouTube</a></li>
+        </ul>
+    </div>
+
+    <div class="box"><strong>Saint</strong>
+        <ul>
+            <li><a href="https://www.roblox.com/users/8234127139/profile" target="_blank">Roblox</a></li>
+        </ul>
+    </div>
+
+    <div class="box">David</div>
+
+    <div class="box"><strong>Sifet</strong>
+        <ul>
+            <li><a href="https://www.roblox.com/users/10687382593/profile" target="_blank">Roblox</a></li>
+        </ul>
+    </div>
+
+    <div class="box"><strong>Alisha</strong>
+        <ul>
+            <li><a href="https://www.roblox.com/users/7977671848/profile" target="_blank">Roblox</a></li>
+        </ul>
+    </div>
+
+    <div class="box"><strong>Jojo</strong>
+        <ul>
+            <li><a href="https://www.roblox.com/users/3851804725/profile" target="_blank">Roblox</a></li>
+        </ul>
+    </div>
+    
+    <div class="box">Muhammad</div>
+
+
+    <!-- NEWS BOX -->
+    <div class="section">
+        <h2>Group News</h2>
+
+        <div class="box">• Welcome new member Muhammad!.</div>
+
+        <button onclick="window.location.href='enemies.html'">Open Enemy Files</button>
+    </div>
+
+    <button onclick="window.location.href='eh-chat/chat.html'">Open chat</button>
+    <button onclick="window.location.href='video.html'">Open video call</button>
+    <button onclick="window.location.href='reels.html'">Open reels</button>
+    <button onclick="window.location.href='BLOGSELECT.html'">Open blog</button>
+
+    <!-- MUSICAL.LY UPLOAD BUTTON -->
+    <button onclick="window.location.href='uploadmusical.lyvideo.html'">
+        Upload dance / lip sync to Musical.ly
+    </button>
+
+    <!-- ADMIN PANEL -->
+    <div id="adminPanel" class="adminPanel" style="display:none;">
+        <h2>Admin Panel</h2>
+        <p>Owner Only. Manage members, enemies, and system settings.</p>
+
+        <div id="applicationsArea"></div>
+    </div>
+
+    <script>
+        const username = localStorage.getItem("EH_username");
+        document.getElementById("welcome").innerText = "Logged in as: " + username;
+
+        const admins = ["Austin,Christian"];
+
+        if (admins.includes(username)) {
+
+            document.getElementById("adminPanel").style.display = "block";
+
+            let apps = JSON.parse(localStorage.getItem("EH_applications")) || [];
+            let appCount = apps.length;
+
+            let appeals = JSON.parse(localStorage.getItem("EH_kickAppeals")) || [];
+            let appealCount = appeals.length;
+
+            let musicallyUploads = JSON.parse(localStorage.getItem("EH_musicallyUploads")) || [];
+            let musicallyCount = musicallyUploads.length;
+
+            const panel = document.getElementById("applicationsArea");
+
+            // Applications button
+            const appBtn = document.createElement("button");
+            appBtn.innerText = "View Applications (" + appCount + ")";
+            appBtn.onclick = () => window.location.href = "applications.html";
+            panel.appendChild(appBtn);
+
+            // Appeals button
+            const appealBtn = document.createElement("button");
+            appealBtn.innerText = "View Kick-Out Appeals (" + appealCount + ")";
+            appealBtn.onclick = () => window.location.href = "appeals.html";
+            panel.appendChild(appealBtn);
+
+            // ⭐ MUSICAL.LY UPLOADS BUTTON (FIXED + ADDED)
+            const musicallyBtn = document.createElement("button");
+            musicallyBtn.innerText = "View Musical.ly Uploads (" + musicallyCount + ")";
+            musicallyBtn.onclick = () => window.location.href = "musicallyuploads.html";
+            panel.appendChild(musicallyBtn);
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Enemy Hunters – Login</title>
+
+    <style>
+        body {
+            background: #111;
+            color: white;
+            font-family: Arial;
+            text-align: center;
+            padding-top: 80px;
+        }
+        input {
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            width: 70%;
+            margin-top: 10px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 12px 25px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            background: #ff3333;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkred;
+        }
+        #denied {
+            margin-top: 20px;
+            color: red;
+            font-size: 20px;
+            font-weight: bold;
+            display: none;
+        }
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Enemy Hunters Login</h1>
+    <p>Enter your credentials to continue</p>
+
+    <!-- NAME -->
+    <input id="usernameInput" placeholder="First Name">
+
+    <!-- ID NUMBER -->
+    <input id="idInput" placeholder="ID Number">
+
+    <!-- ENEMY 1 NAME -->
+    <input id="enemyInput" placeholder="Enemy 1 Name">
+
+    <br>
+    <button onclick="login()">Enter</button>
+
+    <br><br>
+
+    <!-- APPLY BUTTON -->
+    <button onclick="window.location.href='apply.html'">Apply</button>
+
+    <div id="denied">ACCESS DENIED</div>
+
+    <script>
+    function login() {
+        const usernameRaw = document.getElementById("usernameInput").value.trim();
+
+        // Force professional capitalization
+        const username =
+            usernameRaw.charAt(0).toUpperCase() +
+            usernameRaw.slice(1).toLowerCase();
+
+        const id = document.getElementById("idInput").value.trim();
+        const enemyCheck = document.getElementById("enemyInput").value.trim();
+
+        // Allowed users + ID numbers (PROFESSIONAL)
+        const allowed = {
+            "Banker": "001",
+            "ATV": "000",
+            "Toaster": "003",
+            "": "004",
+            "Defense": "005",
+            "Jojo": "006",
+            "Alisha": "007",
+            "Prorayal": "008",
+        };
+
+        // Enemy 001 verification MUST be EXACTLY "Kulsom"
+        const requiredEnemy = "Kulsom";
+
+        // Check username
+        if (!allowed[username]) {
+            showDenied("ACCESS DENIED: Unknown User");
+            return;
+        }
+
+        // Check ID number
+        if (allowed[username] !== id) {
+            showDenied("ACCESS DENIED: Incorrect ID Number");
+            return;
+        }
+
+        // CASE-SENSITIVE enemy verification
+        if (enemyCheck !== requiredEnemy) {
+            showDenied("ACCESS DENIED: Enemy Verification Failed");
+            return;
+        }
+
+        // SUCCESS
+        localStorage.setItem("EH_username", username);
+
+        // SPECIAL REDIRECT FOR CHRISTIAN
+        if (username === "Christian") {
+            window.location.href = "dashboard.html";
+        } else {
+            window.location.href = "dashboard.html";
+        }
+    }
+
+    function showDenied(msg) {
+        const denied = document.getElementById("denied");
+        denied.innerText = msg;
+        denied.style.display = "block";
+    }
+</script>
+
+</body>
+</html>

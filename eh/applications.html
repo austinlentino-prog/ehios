@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Enemy Hunters – Applications</title>
+
+    <style>
+        body {
+            background: #000;
+            color: white;
+            font-family: Arial;
+            padding: 20px;
+        }
+        .appBox {
+            background: #111;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 2px solid red;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 15px;
+            font-size: 16px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkred;
+        }
+        .deny {
+            background: gray;
+        }
+        .deny:hover {
+            background: darkgray;
+        }
+    </style>
+</head>
+<body>
+
+    <button onclick="window.location.href='dashboard.html'">← Back</button>
+    <h1>Pending Applications</h1>
+
+    <div id="appsContainer"></div>
+
+<script>
+    const username = localStorage.getItem("EH_username");
+    const admins = ["Austin", "Christian"];
+
+    // ONLY ADMINS CAN VIEW THIS PAGE
+    if (!admins.includes(username)) {
+        document.body.innerHTML = "<h1>ACCESS DENIED</h1><p>You are not an owner.</p>";
+        throw new Error("Not allowed");
+    }
+
+    let apps = JSON.parse(localStorage.getItem("EH_applications")) || [];
+    let members = JSON.parse(localStorage.getItem("EH_members")) || ["Saint","David","Sifet","Alisha","Jojo"];
+
+    const container = document.getElementById("appsContainer");
+
+    function saveApps() {
+        localStorage.setItem("EH_applications", JSON.stringify(apps));
+    }
+
+    function saveMembers() {
+        localStorage.setItem("EH_members", JSON.stringify(members));
+    }
+
+    function renderApps() {
+        container.innerHTML = "";
+
+        if (apps.length === 0) {
+            container.innerHTML = "<p>No pending applications.</p>";
+            return;
+        }
+
+        apps.forEach((app, index) => {
+            const box = document.createElement("div");
+            box.className = "appBox";
+
+            box.innerHTML = `
+                <p><b>Name:</b> ${app.name}</p>
+                <p><b>School:</b> ${app.school}</p>
+                <p><b>Grade:</b> ${app.grade}</p>
+                <p><b>Reason:</b> ${app.reason}</p>
+                <p><b>Submitted:</b> ${app.time}</p>
+
+                <button onclick="approve(${index})">Approve</button>
+                <button class="deny" onclick="deny(${index})">Deny</button>
+            `;
+
+            container.appendChild(box);
+        });
+    }
+
+    function approve(i) {
+        const app = apps[i];
+
+        // Add to members list
+        members.push(app.name);
+        saveMembers();
+
+        // Remove from applications
+        apps.splice(i, 1);
+        saveApps();
+
+        alert(app.name + " has been approved and added to members.");
+        renderApps();
+    }
+
+    function deny(i) {
+        const app = apps[i];
+
+        apps.splice(i, 1);
+        saveApps();
+
+        alert(app.name + "'s application has been denied.");
+        renderApps();
+    }
+
+    renderApps();
+</script>
+
+</body>
+</html>

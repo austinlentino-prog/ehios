@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Enemy Hunters – Upload Reel</title>
+    <style>
+        body {
+            background: #000;
+            color: white;
+            font-family: Arial;
+            padding: 20px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
+            background: #111;
+            color: white;
+        }
+        button {
+            margin-top: 20px;
+            padding: 12px 20px;
+            font-size: 18px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkred;
+        }
+    </style>
+</head>
+<body>
+
+<button onclick="window.location.href='reels.html'">← Back to Reels</button>
+<h1>Upload Enemy Hunters Reel</h1>
+
+<p>Caption:</p>
+<textarea id="caption" rows="3"></textarea>
+
+<p>MP4 Video File:</p>
+<input type="file" id="videoFile" accept="video/mp4">
+
+<button onclick="uploadReel()">Upload Reel</button>
+
+<script>
+    const username = localStorage.getItem("EH_username") || "";
+    const members = JSON.parse(localStorage.getItem("EH_members")) || ["Saint","David","Sifet","Alisha","Jojo"];
+    const owners = ["Austin","Christian"];
+    const allowed = owners.includes(username) || members.includes(username);
+
+    if (!allowed) {
+        document.body.innerHTML = "<h1>ACCESS DENIED</h1><p>Only Enemy Hunters members and owners can upload reels.</p>";
+        throw new Error("Not allowed");
+    }
+
+    function uploadReel() {
+        const caption = document.getElementById("caption").value.trim();
+        const fileInput = document.getElementById("videoFile");
+        const file = fileInput.files[0];
+
+        if (!caption || !file) {
+            alert("Please add a caption and select a video file.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const base64Video = e.target.result;
+
+            let reels = JSON.parse(localStorage.getItem("EH_reels")) || [];
+            const newReel = {
+                id: Date.now().toString(),
+                caption: caption,
+                videoData: base64Video,
+                likes: 0,
+                dislikes: 0,
+                uploader: username,
+                time: new Date().toLocaleString()
+            };
+
+            reels.push(newReel);
+            localStorage.setItem("EH_reels", JSON.stringify(reels));
+
+            alert("Reel uploaded successfully.");
+            window.location.href = "reels.html";
+        };
+
+        reader.readAsDataURL(file);
+    }
+</script>
+
+</body>
+</html>

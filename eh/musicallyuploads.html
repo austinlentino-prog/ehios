@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Musical.ly Uploads</title>
+
+    <style>
+        body {
+            background: #000;
+            color: white;
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        .uploadBox {
+            background: #111;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid red;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: darkred;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Musical.ly Uploads</h1>
+    <p>Videos submitted by members for the official Enemy Hunters Musical.ly account.</p>
+
+    <div id="uploadsContainer"></div>
+
+    <script>
+        let uploads = JSON.parse(localStorage.getItem("EH_musicallyUploads")) || [];
+
+        const container = document.getElementById("uploadsContainer");
+
+        if (uploads.length === 0) {
+            container.innerHTML = "<p>No uploads yet.</p>";
+        } else {
+            uploads.forEach((upload, index) => {
+
+                const box = document.createElement("div");
+                box.className = "uploadBox";
+
+                box.innerHTML = `
+                    <strong>Uploader:</strong> ${upload.uploader}<br>
+                    <strong>Date:</strong> ${upload.date}<br>
+                    <strong>Filename:</strong> ${upload.filename}<br>
+                    <strong>Notes:</strong> ${upload.notes || "None"}<br><br>
+
+                    <video width="300" controls>
+                        <source src="${upload.videoData}">
+                    </video><br><br>
+
+                    <button onclick="downloadVideo(${index})">Download Video</button>
+                `;
+
+                container.appendChild(box);
+            });
+        }
+
+        function downloadVideo(index) {
+            const upload = uploads[index];
+
+            const a = document.createElement("a");
+            a.href = upload.videoData;
+            a.download = upload.filename;
+            a.click();
+        }
+    </script>
+
+</body>
+</html>

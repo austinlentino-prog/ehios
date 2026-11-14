@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Musical.ly Video</title>
+
+    <style>
+        body {
+            background: #000;
+            color: white;
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        .box {
+            background: #111;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid red;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
+            background: #222;
+            color: white;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 12px 20px;
+            font-size: 18px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: darkred;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Upload Dance / Lip Sync</h1>
+
+    <div class="box">
+        <h2>Submit Your Musical.ly Video</h2>
+
+        <p>Upload your dance or lip sync video for the official Enemy Hunters Musical.ly account.</p>
+
+        <input type="text" id="uploader" placeholder="Your Name">
+
+        <input type="file" id="videoFile" accept="video/*">
+
+        <textarea id="notes" placeholder="Optional: Notes for Austin"></textarea>
+
+        <button onclick="submitVideo()">Submit Video</button>
+    </div>
+
+    <script>
+        function submitVideo() {
+            const uploader = document.getElementById("uploader").value.trim();
+            const fileInput = document.getElementById("videoFile");
+            const notes = document.getElementById("notes").value.trim();
+
+            if (!uploader || fileInput.files.length === 0) {
+                alert("Please enter your name and select a video.");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const videoURL = URL.createObjectURL(file);
+            const video = document.createElement("video");
+
+            video.src = videoURL;
+
+            video.onloadedmetadata = function() {
+                if (video.duration > 15) {
+                    alert("❌ Video rejected: Must be 15 seconds or less.");
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+
+                    let uploads = JSON.parse(localStorage.getItem("EH_musicallyUploads")) || [];
+
+                    uploads.push({
+                        uploader: uploader,
+                        notes: notes,
+                        videoData: e.target.result,
+                        filename: file.name,
+                        duration: video.duration,
+                        date: new Date().toLocaleString()
+                    });
+
+                    localStorage.setItem("EH_musicallyUploads", JSON.stringify(uploads));
+
+                    alert("Video submitted successfully!");
+                    window.location.href = "dashboard.html";
+                };
+
+                reader.readAsDataURL(file);
+            };
+        }
+    </script>
+
+</body>
+</html>
+
